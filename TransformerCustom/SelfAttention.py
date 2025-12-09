@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class SelfAttention(nn.Module):
-    def __init__(self, embed_size, heads=8):
+    def __init__(self, embed_size, heads):
         super(SelfAttention, self).__init__()
 
         self.heads = heads
@@ -14,7 +14,7 @@ class SelfAttention(nn.Module):
         self.q = nn.Linear(self.head_dim, self.head_dim, bias=False)
         self.k = nn.Linear(self.head_dim, self.head_dim, bias=False)
         self.v = nn.Linear(self.head_dim, self.head_dim, bias=False)
-        self.fc_out = nn.Linear(self.head_dim, self.head_dim, bias=False)
+        self.fc_out = nn.Linear(self.embed_size, self.embed_size, bias=False)
 
     def forward(self, q, k, v, mask=None):
 
@@ -29,7 +29,7 @@ class SelfAttention(nn.Module):
         k = self.k(k)
         v = self.v(v)
 
-        energy = torch.einsum("nqhd,nkhd→nhqk", [q, k])
+        energy = torch.einsum("nqhd,nkhd->nhqk", [q, k])
 
         if mask is not None:
             energy = energy.masked_fill(mask == 0, float("-1e20"))
@@ -37,7 +37,7 @@ class SelfAttention(nn.Module):
         attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3)
 
         # key_len == value_len
-        out = torch.einsum("nhqk,nkhd→nqhd", [attention, v])
+        out = torch.einsum("nhqk,nkhd->nqhd", [attention, v])
 
         # -1 => embed_size
         out = out.reshape(N, q_len, -1)

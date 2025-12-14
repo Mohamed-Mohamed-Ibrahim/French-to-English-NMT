@@ -25,18 +25,20 @@ class SelfAttention(nn.Module):
         k = self.k(k)
         v = self.v(v)
 
+        # Reshape to (Batch, Seq_Len, Heads, Head_Dim)
         q = q.reshape(N, q_len, self.heads, self.head_dim)
         k = k.reshape(N, k_len, self.heads, self.head_dim)
         v = v.reshape(N, v_len, self.heads, self.head_dim)
 
+        # Einsum: (N, Q_len, Heads, Head_Dim) * (N, K_len, Heads, Head_Dim) -> (N, Heads, Q_len, K_len)
         energy = torch.einsum("nqhd,nkhd->nhqk", [q, k])
 
         if mask is not None:
             energy = energy.masked_fill(mask == 0, float("-1e20"))
 
-        attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3)
+        attention = torch.softmax(energy / (self.head_dim ** (1/2)), dim=3)
 
-        # key_len == value_len
+        # Einsum: (N, Heads, Q_len, K_len) * (N, V_len, Heads, Head_Dim) -> (N, Q_len, Heads, Head_Dim)
         out = torch.einsum("nhqk,nkhd->nqhd", [attention, v])
 
         # -1 => embed_size

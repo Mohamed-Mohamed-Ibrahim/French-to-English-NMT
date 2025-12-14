@@ -11,9 +11,9 @@ class SelfAttention(nn.Module):
 
         assert embed_size % heads == 0, "embed_size must be divisible by heads"
 
-        self.q = nn.Linear(self.head_dim, self.head_dim, bias=False)
-        self.k = nn.Linear(self.head_dim, self.head_dim, bias=False)
-        self.v = nn.Linear(self.head_dim, self.head_dim, bias=False)
+        self.q = nn.Linear(self.embed_size, self.embed_size, bias=False)
+        self.k = nn.Linear(self.embed_size, self.embed_size, bias=False)
+        self.v = nn.Linear(self.embed_size, self.embed_size, bias=False)
         self.fc_out = nn.Linear(self.embed_size, self.embed_size, bias=False)
 
     def forward(self, q, k, v, mask=None):
@@ -21,13 +21,13 @@ class SelfAttention(nn.Module):
         N = q.size(0)
         q_len, k_len, v_len = q.size(1), k.size(1), v.size(1)
 
-        q = q.reshape(N, q_len, self.heads, self.head_dim)
-        k = k.reshape(N, k_len, self.heads, self.head_dim)
-        v = v.reshape(N, v_len, self.heads, self.head_dim)
-
         q = self.q(q)
         k = self.k(k)
         v = self.v(v)
+
+        q = q.reshape(N, q_len, self.heads, self.head_dim)
+        k = k.reshape(N, k_len, self.heads, self.head_dim)
+        v = v.reshape(N, v_len, self.heads, self.head_dim)
 
         energy = torch.einsum("nqhd,nkhd->nhqk", [q, k])
 

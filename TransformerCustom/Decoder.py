@@ -31,7 +31,8 @@ class Decoder(nn.Module):
             )
             for _ in range(num_layers)
         ])
-        self.fc_out = nn.Linear(embed_size, trg_vocab_size)
+        self.fc_out = nn.Linear(embed_size, trg_vocab_size, bias=False)
+        self.fc_out.weight = self.embed_layer.weight
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, enc_out, src_mask, trg_mask):

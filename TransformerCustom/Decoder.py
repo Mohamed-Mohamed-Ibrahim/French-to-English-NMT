@@ -31,9 +31,12 @@ class Decoder(nn.Module):
             )
             for _ in range(num_layers)
         ])
+        # bias=False -> as Embedding Layer dose not use bias
         self.fc_out = nn.Linear(embed_size, trg_vocab_size, bias=False)
         self.fc_out.weight = self.embed_layer.weight
-        self.dropout = nn.Dropout(dropout)
+
+        # No dropout for logits (can be before logits)
+
 
     def forward(self, x, enc_out, src_mask, trg_mask):
         N, seq_len = x.size()
@@ -44,6 +47,11 @@ class Decoder(nn.Module):
         for layer in self.layers:
             x = layer(x, enc_out, enc_out, src_mask, trg_mask)
 
-        out = self.dropout(self.fc_out(x))
+
+
+        out = self.fc_out(x)
+
+        # No dropout for logits (can be before logits)
+
 
         return out

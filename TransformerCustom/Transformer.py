@@ -51,7 +51,7 @@ class Transformer(nn.Module):
 
     def make_trg_mask(self, trg):
         N, trg_len = trg.size()
-        return torch.tril(torch.ones(trg_len, trg_len)).expand(
+        return torch.tril(torch.ones((trg_len, trg_len), device=self.device)).expand(
             N, 1, trg_len, trg_len
         )
 
@@ -61,4 +61,3 @@ class Transformer(nn.Module):
         enc_out = self.encoder(src, src_mask)
         dec_out = self.decoder(trg, enc_out, src_mask, trg_mask)
         return dec_out
-

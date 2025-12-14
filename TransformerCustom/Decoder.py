@@ -21,6 +21,7 @@ class Decoder(nn.Module):
 
         self.embed_layer = nn.Embedding(trg_vocab_size, embed_size)
         self.positional_encoding = nn.Embedding(max_length, embed_size)
+        self.dropout = nn.Dropout(dropout)
 
         self.layers = nn.ModuleList([
             DecoderBlock(
@@ -41,12 +42,14 @@ class Decoder(nn.Module):
     def forward(self, x, enc_out, src_mask, trg_mask):
         N, seq_len = x.size()
 
-        position_embedding = torch.arange(0, seq_len).expand(N, seq_len).to(self.device)
+        # No using self.device (x.device is better for .to(device) in global view)
+        # self.device can be still on cpu while x.device is actually on cuda
+        position_embedding = torch.arange(0, seq_len, device=x.device).expand(N, seq_len)
+        
         x = self.dropout(self.embed_layer(x) + self.positional_encoding(position_embedding))
 
         for layer in self.layers:
             x = layer(x, enc_out, enc_out, src_mask, trg_mask)
-
 
 
         out = self.fc_out(x)

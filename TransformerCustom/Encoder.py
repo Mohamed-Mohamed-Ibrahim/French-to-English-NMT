@@ -36,7 +36,8 @@ class Encoder(nn.Module):
     def forward(self, src, mask):
         N, seq_len = src.size()
 
-        position_embedding = torch.arange(0, seq_len).expand(N, seq_len).to(self.device)
+        position_embedding = torch.arange(0, seq_len, device=src.device).expand(N, seq_len)
+        
         out = self.dropout(self.embed_layer(src) + self.positional_encoding(position_embedding))
 
         for layer in self.layers:

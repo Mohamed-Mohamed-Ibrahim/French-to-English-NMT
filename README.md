@@ -68,8 +68,7 @@ During the evaluation phase, we identified a **data leakage** issue within the p
 * **The Issue:** We discovered that several sentence pairs in the test set were also present in the training data about 10%.
 * **Impact:** This resulted in inflated BLEU scores (54.29 for RNN and 52.17 for Transformer), as the models were able to "memorize" certain translations rather than generalizing entirely from scratch.
 
---
-
+---
 
 ## 🏗️ Part 1: Transformer-Based Architecture
 

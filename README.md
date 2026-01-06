@@ -33,6 +33,28 @@ We evaluated both models using the BLEU-4 score metric.
 
 ---
 
+### 🖼️ Visual Results
+
+#### **Transformer Multi-Head Attention**
+The heatmap below shows the attention patterns for a sample sentence. You can observe the model correctly aligning French nouns with their English counterparts, even when word order shifts.
+
+<p align="center">
+  <img src="./docs/img/1.png" alt="transformer_attention_heatmap" width="500"/>
+</p>
+
+> *Figure 1: Transformer attention weights.*
+
+#### **RNN Additive Attention**
+The RNN visualization demonstrates the alignment learned by the Bi-LSTM encoder. 
+
+<p align="center">
+  <img src="./docs/img/2.png" alt="rnn_attention_heatmap" width="500"/>
+</p>
+
+> *Figure 2: RNN attention heatmap.*
+
+---
+
 ## 📂 Dataset
 
 * **Source:** Parallel French and English sentences (partitioned into train, validation, and test splits).
@@ -40,6 +62,18 @@ We evaluated both models using the BLEU-4 score metric.
 * **Resources:** Tokenizers for French and English are provided via the problem statement resources.
 
 ---
+
+## ⚠️ Note on Data Leakage & Evaluation
+
+During the evaluation phase, we identified a **data leakage** issue within the provided dataset splits. 
+
+### 🔍 Observations
+
+* **The Issue:** We discovered that several sentence pairs in the test set were also present in the training data about 10%.
+* **Impact:** This resulted in inflated BLEU scores (54.29 for RNN and 52.17 for Transformer), as the models were able to "memorize" certain translations rather than generalizing entirely from scratch.
+
+--
+
 
 ## 🏗️ Part 1: Transformer-Based Architecture
 

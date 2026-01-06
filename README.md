@@ -36,22 +36,18 @@ We evaluated both models using the BLEU-4 score metric.
 ### 🖼️ Visual Results
 
 #### **Transformer Multi-Head Attention**
-The heatmap below shows the attention patterns for a sample sentence. You can observe the model correctly aligning French nouns with their English counterparts, even when word order shifts.
 
 <p align="center">
-  <img src="./docs/img/1.png" alt="transformer_attention_heatmap" width="500"/>
+  <img src="./docs/img/1.png" alt="transformer_attention_heatmap" width="500"/> <br>
+  <em>Figure 1: Transformer attention heatmap.</em>
 </p>
-
-> *Figure 1: Transformer attention weights.*
 
 #### **RNN Additive Attention**
-The RNN visualization demonstrates the alignment learned by the Bi-LSTM encoder. 
 
 <p align="center">
-  <img src="./docs/img/2.png" alt="rnn_attention_heatmap" width="500"/>
+  <img src="./docs/img/2.png" alt="rnn_attention_heatmap" width="500"/> <br>
+  <em>Figure 2: RNN attention heatmap.</em>
 </p>
-
-> *Figure 2: RNN attention heatmap.*
 
 ---
 

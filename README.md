@@ -13,12 +13,14 @@
 
 ## 📋 Objective
 
-This project implements two Sequence-to-Sequence (Seq2Seq) models to build a Neural Machine Translation (NMT) system capable of translating **French to English**.
+This project implements two **Sequence-to-Sequence** **(Seq2Seq)** models to build a Neural Machine Translation (NMT) system capable of translating **French to English**.
 
 The two architectures implemented are:
 
 1. **Transformer:** A simplified Encoder-Decoder Transformer model.
 2. **Recurrent Neural Network (RNN):** A Bi-LSTM Encoder and Unidirectional LSTM Decoder with Additive Attention.
+
+---
 
 ## 🏆 Results
 
@@ -35,7 +37,7 @@ We evaluated both models using the BLEU-4 score metric.
 
 * **Source:** Parallel French and English sentences (partitioned into train, validation, and test splits).
 * **Tokenization:** Byte Pair Encoding (BPE) is used to handle rare words by splitting them into subword tokens.
-* **Resources:** Tokenizers for French and English are provided via the assignment resources.
+* **Resources:** Tokenizers for French and English are provided via the problem statement resources.
 
 ---
 
@@ -51,23 +53,24 @@ We implemented a modified version of the standard Transformer architecture.
 
 ### Architecture Details
 
-1. **Embeddings:** * Sum of Token Embeddings () and Learned Positional Embeddings ().
-* Decoder uses separate embedding matrices.
+1. **Embeddings:** Sum of Token Embeddings and Learned Positional Embeddings.
+   - Decoder uses separate embedding matrices.
 
 
 2. **Multi-Head Attention:**
-* Implemented manually (vectorized) without using `nn.MultiheadAttention`.
-* Uses **Scaled Dot-Product Attention**:
+   - Implemented manually (vectorized) without using `nn.MultiheadAttention`.
+   - Uses **Scaled Dot-Product Attention**.
+
+3. **Masking:** 
+   - Pad tokens are masked with large negative values. The decoder uses causal masking to prevent attending to future tokens.
 
 
-* **Masking:** Pad tokens are masked with large negative values. The decoder uses causal masking to prevent attending to future tokens.
+4. **Feedforward Layers:**
+   - Projects to intermediate dimension , applies ReLU, projects back, and applies dropout.
 
 
-3. **Feedforward Layers:**
-* Projects to intermediate dimension , applies ReLU, projects back, and applies dropout.
-
-
-4. **Add & Norm:** Residual connections and Layer Normalization applied after attention and feedforward blocks.
+5. **Add & Norm:** 
+   - Residual connections and Layer Normalization applied after attention and feedforward blocks.
 
 ---
 
@@ -78,24 +81,25 @@ This model utilizes Recurrent Neural Networks with an **Additive Attention** mec
 ### Architecture Details
 
 1. **Encoder (Bi-LSTM):**
-* Consists of two LSTMs processing sequences in opposite directions.
-* Final hidden state is the concatenation of forward and backward states: .
+   - Consists of two LSTMs processing sequences in opposite directions.
+   - Final hidden state is the concatenation of forward and backward states.
 
 
 2. **Decoder Initialization:**
-* Projects the encoder's final hidden/cell states to match decoder dimensions using a linear layer and `tanh` activation.
+   - Projects the encoder's final hidden/cell states to match decoder dimensions using a linear layer and `tanh` activation.
 
 
 3. **Additive Attention:**
-* Computes alignment scores using a feed-forward network rather than dot-product:
+   - Computes alignment scores using a feed-forward network rather than dot-product:
 
 
-* Context vector  is the weighted sum of encoder hidden states based on softmax-normalized scores .
+4. **Context vector:**  
+   - is the weighted sum of encoder hidden states based on softmax-normalized scores.
 
 
-4. **Decoder Step:**
-* Input: Concatenation of previous token embedding  and context vector .
-* Output Projection: Concatenates , , and  to predict the next token.
+5. **Decoder Step:**
+   - Input: Concatenation of previous token embedding  and context vector.
+   - Output Projection: Concatenation to predict the next token.
 
 ---
 
@@ -103,13 +107,13 @@ This model utilizes Recurrent Neural Networks with an **Additive Attention** mec
 
 * **Tokenization:** The `transformers` library is used **only** for tokenization.
 * **Manual Implementation:** * The Multi-Head Attention module is implemented from scratch (vectorized).
-* The Embedding layer (Token + Positional) is implemented manually.
-* Beam Search decoding algorithm is implemented for inference.
+    - The Embedding layer (Token + Positional) is implemented manually.
+    - Beam Search decoding algorithm is implemented for inference.
 
 
 * **Inference:**
-* Models are evaluated using **BLEU** score.
-* **Beam Search** is used for generating translations.
+    - Models are evaluated using **BLEU** score.
+    - **Beam Search** is used for generating translations.
 
 
 * **Visualization:** Attention weights are visualized to interpret model focus during translation.
